@@ -446,6 +446,42 @@ th{color:color-mix(in srgb,var(--lv,var(--g1)) 60%,var(--muted))}
 .hk b{background:linear-gradient(90deg,var(--g5),var(--g1));-webkit-background-clip:text;background-clip:text;color:transparent}
 .donebtn[aria-pressed="true"]{background:color-mix(in srgb,var(--good) 14%,transparent)}
 a.chip.isdone{background:color-mix(in srgb,var(--good) 12%,transparent)}
+/* nodes tab + viewport additions */
+#v-nodes{--lv:var(--o7)}
+nav.rail a.vtab[data-v="nodes"][aria-current="page"]{--accent:var(--o7)}
+.nd-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.nd-list{display:grid;gap:4px;max-height:640px;overflow:auto;padding-right:4px}
+.ndi{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;align-items:baseline;padding:8px 10px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
+.ndi .lvl{padding:0 6px;font-size:.62rem}
+.ndi b{font-size:.95rem;white-space:nowrap}
+.ndi .small{grid-column:1 / -1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ndi:hover{border-color:var(--lv)}
+.ndi.cur{border-color:var(--lv);background:color-mix(in srgb,var(--lv) 12%,var(--surface));box-shadow:inset 4px 0 0 var(--lv)}
+.ndi:focus-visible{outline:2px solid var(--accent2)}
+.nd-card{position:sticky;top:64px;gap:12px}
+.nd-title{font-family:var(--f-display);font-size:2.2rem;text-transform:uppercase;background:linear-gradient(90deg,var(--lv),var(--g5));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pchip{display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:999px;font-family:var(--f-body);font-size:.8rem;background:color-mix(in srgb,var(--lv) 12%,var(--bg));border:1px solid color-mix(in srgb,var(--lv) 30%,var(--line))}
+.pt-split{align-items:start}
+.pt-tree{max-height:520px}
+.ptrow{font-family:var(--f-mono);font-size:.8rem;padding:3px 6px;border-radius:3px;color:var(--muted)}
+.ptrow .ty{font-size:.68rem}
+.ptrow.on{color:var(--ink);background:color-mix(in srgb,var(--lv) 22%,transparent);box-shadow:inset 3px 0 0 var(--lv);font-weight:600}
+.sg-bar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.sg-grid{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:12px;align-items:start}
+.sg-main{max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:5px}
+.sg-main table{font-size:.82rem}
+.sg-main th{position:sticky;top:0;background:var(--surface)}
+.sgr{cursor:pointer} .sgr:hover td{background:color-mix(in srgb,var(--lv) 8%,transparent)} .sgr.cur td{background:color-mix(in srgb,var(--lv) 18%,transparent)}
+.sgdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0}
+.sg-detail{min-height:110px;padding:10px;border-radius:5px;background:var(--code);border:1px solid var(--line);display:grid;gap:6px;align-content:start;font-size:.88rem}
+.sg-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--muted)}
+.do-grid{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:16px;align-items:start}
+.do-tabs{display:grid;gap:4px}
+.do-tabs .tab{text-align:left}
+table.sgt td,table.sgt th{text-align:center;padding:5px}
+table.sgt td:first-child,table.sgt th:first-child{text-align:left}
+table.sgt input{width:17px;height:17px;accent-color:var(--lv)}
+@media (max-width:900px){.nd-grid,.sg-grid,.do-grid{grid-template-columns:minmax(0,1fr)}.nd-card{position:static}.nd-list{max-height:360px}.do-tabs{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
 </style>
 </head>
 <body>
@@ -477,7 +513,7 @@ a.chip.isdone{background:color-mix(in srgb,var(--good) 12%,transparent)}
   <div class="how"><b>1 · Learn</b><span>16 short lessons from loading a shot to debugging it, all on one street scene.</span></div>
   <div class="how"><b>2 · Fix</b><span>6 missions: broken shots with the bugs lighters really hit on the farm.</span></div>
   <div class="how"><b>3 · Look up</b><span>22 reference chapters in three levels, plus a one-page cheat sheet.</span></div>
-  <div class="how"><b>Arnold &amp; Viewport</b><span>Deep-dive tabs: every Arnold option, operators, imagers, AOVs, debugging; and hands-on viewport light placement.</span></div>
+  <div class="how"><b>Arnold, Viewport, Nodes</b><span>Deep dives: every Arnold option and operator, the viewport in detail, 50+ LOPs, prim patterns and the Scene Graph spreadsheet.</span></div>
   <div class="how"><b>Simple or Expert</b><span>Switch at the top. Simple explains with lighting analogies; Expert uses USD terms.</span></div>
 </section>
 </div>
@@ -681,9 +717,92 @@ kick -i /tmp/sh010_debug.ass -v 5</pre></div>
       <canvas class="cv" id="galCv" width="560" height="220" aria-label="Snapshot comparison"></canvas><div class="note small" id="galMsg"></div></div>
   </section>
 
+  <section class="ch wide" id="vp-display">
+    <div class="text"><span class="eyebrow">06 · Display options</span><h2>Display Options, tab by tab</h2>
+      <p>Press <kbd>D</kbd> with the mouse over the viewport. The Display Options window controls how Houdini GL draws the stage, and, in Solaris, some render delegate settings. Pick a tab to see the options that matter to a lighter.</p>
+      <p>By default the viewport uses the lights in your scene. With no lights, Hydra adds a headlight. <b>Disable Lighting</b> turns scene lights off to check emissive shaders. The <code>HOUDINI_DEFAULT_DOMELIGHT_TEXTURE</code> environment variable puts a map on the automatic dome.</p></div>
+    <div class="do-grid">
+      <div class="do-tabs" id="doTabs"></div>
+      <div class="panel" id="doCard"></div>
+    </div>
+  </section>
+
+  <section class="ch wide" id="vp-tree">
+    <div class="text"><span class="eyebrow">07 · Scene Graph Tree</span><h2>Scene Graph Tree columns</h2>
+      <p>The tree is a control panel as much as a list. Its <b>L</b> (Loaded), <b>Active</b>, <b>Visible</b>, <b>Solo</b> and <b>Selectable</b> columns change what the viewport shows <b>without editing your USD</b>: they live in a view override layer. Use them freely while working, then use the Load masks menu's <b>Create Configure Stage Node from Load Masks</b> if a load setup should become part of the network.</p>
+      <p>Other habits: save <b>selection rules</b> (Show New Selection Rule Dialog) and use them in any LOP as <code>%rule:name</code>. Pin prims to <b>Favorites</b>. Hover a prim and press <kbd>MMB</kbd> for its info, <kbd>Ctrl</kbd>+<kbd>MMB</kbd> to pin that window. <kbd>Ctrl</kbd>-click the Solo column to build a solo group. <b>Show Overrides</b> reveals over-only prims, handy for debugging.</p></div>
+    <div class="split">
+      <div class="panel"><div class="tbl"><table class="sgt" id="sgtTbl"></table></div>
+        <div class="chips"><button class="btn" id="sgtReset">Reset viewport overrides</button></div>
+        <div class="note small" id="sgtNote"></div></div>
+      <div class="panel"><canvas class="cv" id="sgtCv" width="640" height="340" aria-label="Viewport preview with tree overrides"></canvas>
+        <div class="chips" id="sgtModes"><button class="chip" data-m="gl">Houdini GL</button><button class="chip" data-m="ipr">Arnold IPR</button></div></div>
+    </div>
+  </section>
+
   <section class="ch wide" id="vp-tips">
-    <div class="text"><span class="eyebrow">06 · Habits</span><h2>Ten habits for a fast, calm viewport</h2></div>
+    <div class="text"><span class="eyebrow">08 · Habits</span><h2>Ten habits for a fast, calm viewport</h2></div>
     <div class="cs" id="vpTips"></div>
+  </section>
+</div>
+
+<!-- NODES TAB -->
+<div data-view="nodes" id="v-nodes">
+  <div class="lvl-head"><span class="eyebrow">Reference</span><h2>Solaris nodes, in detail</h2>
+    <p>Every LOP a lighter meets, what it writes into USD, the parameters that matter, and the traps. Then learn the two skills that make Solaris fast to work in: prim patterns, and reading the Scene Graph Details spreadsheet.</p>
+    <div class="chips" id="ndNav"></div></div>
+
+  <section class="ch wide" id="nd-library">
+    <div class="text"><span class="eyebrow">01 · Node library</span><h2>The LOP encyclopedia</h2>
+      <p>Search by name or by what you want to do ("hide", "AOV", "variant"), or filter by family. Click a node for its full card.</p></div>
+    <div class="nd-grid">
+      <div class="panel">
+        <div class="ctl"><label for="ndQ">Search nodes</label><input type="text" id="ndQ" placeholder="e.g. hide, light link, payload, AOV…"></div>
+        <div class="chips" id="ndCats"></div>
+        <div class="nd-list" id="ndList"></div>
+      </div>
+      <div class="panel nd-card" id="ndCard"></div>
+    </div>
+  </section>
+
+  <section class="ch wide" id="nd-patterns">
+    <div class="text"><span class="eyebrow">02 · Prim patterns</span><h2>Selecting prims with patterns</h2>
+      <p>Almost every LOP has a <b>Primitives</b> field. It takes a pattern, not just a path. Learn a few tokens and one field can target exactly the right prims, however the scene changes.</p>
+      <p>Spaces or <code>+</code> join sets, <code>&amp;</code> keeps only what's in both, <code>-</code> or <code>^</code> removes. Operators have equal precedence and read left to right, so use parentheses: <code>/* - (/a /b)</code>. Auto collections start with <code>%</code>: <code>%type:</code>, <code>%kind:</code>, <code>%purpose:</code>, <code>%visible:</code>, <code>%geofrommat:</code> and many more.</p>
+      <div class="callout small">Speed: a leading <code>*</code> or <code>**</code> walks the whole stage. Start from a path (<code>/World/chars/**</code>), intersect early with <code>&amp;</code>, and use <code>~</code> to stop descending. The Performance Monitor reports pattern time per node.</div></div>
+    <div class="split pt-split">
+      <div class="panel">
+        <div class="ctl"><label for="ptIn">Pattern</label><input type="text" id="ptIn" spellcheck="false"></div>
+        <div class="chips" id="ptPresets"></div>
+        <div class="note small" id="ptNote"></div>
+        <div class="readouts"><div class="ro hl"><span>Matched</span><b id="ptN"></b></div><div class="ro"><span>Traversal</span><b id="ptCost"></b></div></div>
+      </div>
+      <div class="panel"><span class="eyebrow">Street shot stage · matches highlighted</span><div class="tree pt-tree" id="ptTree"></div></div>
+    </div>
+    <div class="panel"><div class="tbl"><table><thead><tr><th>Token</th><th>Meaning</th><th>Example</th></tr></thead><tbody id="ptRef"></tbody></table></div></div>
+  </section>
+
+  <section class="ch wide" id="nd-sheet">
+    <div class="text"><span class="eyebrow">03 · Spreadsheet</span><h2>Reading the Scene Graph Details spreadsheet</h2>
+      <p>Scene Graph Details is Solaris' spreadsheet. The top part lists the attributes of the prims selected in the Scene Graph Tree; the bottom part has tabs about the attribute you click: <b>Value</b>, <b>Time Samples</b>, <b>Metadata</b>, <b>Editor Nodes</b>, <b>Layer Stack</b> and <b>Composition</b>.</p>
+      <p>Values are colour-coded: not set, fallback, set, time sampled, value clip, computed, relationship. <b>List View</b> puts several prims side by side, which is the fastest way to compare all the lights. <b>Decompose Transforms</b> splits matrices into T, R and S.</p>
+      <div class="callout small">Try the tasks on the right. They are the three questions lighters ask the spreadsheet every day.</div></div>
+    <div class="panel sg">
+      <div class="sg-bar">
+        <div class="chips"><button class="chip" id="sgTree" aria-pressed="true">Tree View</button><button class="chip" id="sgListV" aria-pressed="false">List View</button><button class="chip" id="sgDec" aria-pressed="false">Decompose Transforms</button></div>
+        <input type="text" id="sgFilter" placeholder="Filter attributes" style="max-width:220px">
+      </div>
+      <div class="sg-grid">
+        <div class="tree" id="sgPrims"></div>
+        <div style="display:grid;gap:8px;min-width:0">
+          <div class="tbl sg-main"><table id="sgTable"></table></div>
+          <div class="tabs" id="sgTabs"></div>
+          <div class="sg-detail" id="sgDetail"></div>
+        </div>
+      </div>
+      <div class="sg-legend" id="sgLegend"></div>
+      <h3>Tasks</h3><div class="goals" id="sgGoals"></div>
+    </div>
   </section>
 </div>
 
@@ -2408,7 +2527,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(redraw);
    ===================================================================== */
 function subnav(box,ids){$(box).innerHTML=ids.map(([id,l])=>`<a class="chip" href="#${id}">${l}</a>`).join('')}
 subnav('arnNav',[['ar-map','Map'],['ar-options','Options'],['ar-operators','Operators'],['ar-imagers','Imagers'],['ar-aovs','AOVs & light groups'],['ar-geo','Prim settings'],['ar-debug','Debugging'],['ar-versions','What\'s new']]);
-subnav('vpNav',[['vp-cockpit','Tour'],['vp-place','Light placement'],['vp-keys','Keys drill'],['vp-renderer','Which renderer'],['vp-gallery','Render Gallery'],['vp-tips','Habits']]);
+subnav('vpNav',[['vp-cockpit','Tour'],['vp-place','Light placement'],['vp-keys','Keys drill'],['vp-renderer','Which renderer'],['vp-gallery','Render Gallery'],['vp-display','Display options'],['vp-tree','Scene Graph Tree'],['vp-tips','Habits']]);
 
 /* --- map --- */
 const AMAP=[
@@ -2770,6 +2889,266 @@ $('vpTips').innerHTML=TIPS.map(([a,b],i)=>`<div class="cs-card"><span class="mon
 
 arMap();options();setParam();imagers();aovs();bisect();mockvp();lpInit();hkInit();rcInit();galInit();
 
+/* =====================================================================
+   NODES TAB
+   ===================================================================== */
+subnav('ndNav',[['nd-library','Node library'],['nd-patterns','Prim patterns'],['nd-sheet','Spreadsheet']]);
+// [name, family, level, what, writes, parms, tip, gotcha, related, usda]
+const ND=[
+ ['Sublayer','Bring in','basic','Adds USD files to the layer stack, or removes, replaces and reorders them.','subLayers on the root layer','File; Position (strongest / weakest); Load payloads; Mute','Sublayer the published shot first, so every edit sits above it.','Position "strongest" placed after your edits makes the file win over them.','Reference, Stage Manager, Configure Stage','(\n    subLayers = [@$SHOT/publish/shot.usd@]\n)'],
+ ['Reference','Bring in','basic','Brings a file, or a prim from another branch, under a prim. Can author references, payloads, inherits or specializes.','references / payload arc on a prim','Reference type (reference / payload / inherit / specialize); File; Primitive path; Reference primitive; Instanceable','Use the payload type for heavy assets so they can be unloaded.','A reference only brings in one prim tree (the defaultPrim unless you pick one).','Sublayer, Instancer, Configure Primitive','def Xform "car_02" (\n    prepend payload = @assets/car/car.usd@\n    instanceable = true\n) {}'],
+ ['Stage Manager','Bring in','intermediate','A file browser that loads many USD files into a hierarchy in one node, with transforms and flattening.','references or sublayers, transforms','Files; Hierarchy; Flatten to active layer','Quick way to assemble a set from several published files.','Very heavy stages in one node can be slow to edit; split if needed.','Reference, Sublayer','# one reference per file the manager places'],
+ ['SOP Import','Bring in','basic','Converts SOP geometry into USD prims (Mesh, Points, BasisCurves, Volume…).','Geometry prims in an anonymous layer','SOP Path; Primitive path; Import Path Prefix; Attributes to import; Copy to/Reference file; Packed primitive handling','Use name / path attributes on SOP primitives to control the USD hierarchy.','Extra point attributes inflate the USD. Pick only what renders need.','SOP Create, SOP Modify, Scene Import','def Mesh "body" {\n    point3f[] points = [...]\n    int[] faceVertexCounts = [...]\n}'],
+ ['SOP Create','Bring in','basic','A SOP network inside a LOP that outputs USD geometry, so you need no separate OBJ network.','Geometry prims','Same import options as SOP Import','Good for small helper geometry: shadow catchers, cards, blockers.','Hide other objects while working inside it; the Solaris UI re-translates on each edit.','SOP Import, SOP Modify','def Mesh "shadow_catcher" { ... }'],
+ ['SOP Modify','Bring in','intermediate','Converts USD geometry to SOPs, runs the SOP network inside, and writes the changes back as overrides.','Overrides on existing geometry prims','Primitives; Unpack USD to polygons; Output overrides','Small geometry fixes on published assets without republishing.','Unpacking huge geometry is slow; limit the Primitives pattern.','SOP Create, LOP Import (SOP)','over "hero" { over "body" { point3f[] points = [...] } }'],
+ ['Scene Import','Bring in','basic','Brings OBJ-level objects (geo, lights, cameras, materials) into USD.','Prims for each imported object','Objects; Destination path; Force objects; Lights / cameras / materials toggles','Bridge from an existing /obj setup to Solaris.','Renderer-specific OBJ parameters only translate if the renderer supports Scene Import.','SOP Import','def Xform "obj_geo" { ... }'],
+ ['Component Geometry','Assets','intermediate','First node of the Component Builder: SOP networks for render, proxy and simulation proxy geometry.','Component geometry with purposes','Default / proxy / simproxy outputs; Source','Always give a light proxy; viewports and lighters will thank you.','Missing proxy means the viewport draws the full render mesh.','Component Material, Component Output','def Xform "geo" {\n    def Mesh "render" ( purpose = "render" )\n    def Mesh "proxy"  ( purpose = "proxy" )\n}'],
+ ['Component Material','Assets','intermediate','Assigns the materials inside a component asset.','material:binding inside the asset','Material path; Primitive pattern','Bind on parts with patterns; keep materials inside the asset\'s /mtl scope.','Bindings to materials outside the asset break when referenced elsewhere.','Component Geometry, Material Library','over "geo" { rel material:binding = </ASSET/mtl/paint> }'],
+ ['Component Output','Assets','intermediate','Writes a component asset to disk with payload structure, variants and a thumbnail; can add it to the asset catalog.','Asset file plus payload and geometry layers','Name; Output file; Variant layers; Thumbnail; (H21) save source to a recipe sidecar HDA','Publish once, reference everywhere; the payload makes it unloadable.','Changing the root name later breaks references that point at the old defaultPrim.','Component Geometry, Reference','def Xform "car" ( kind = "component"  prepend payload = @./payload.usdc@ ) {}'],
+ ['Instancer','Bring in','advanced','Scatters prototypes onto points as a PointInstancer or as instanceable references.','PointInstancer prim or many references','Prototype primitives; Target points (SOP); Method (point instancer / instanceable reference / reference)','PointInstancer for thousands of copies; instanceable references when you need prims to edit.','Per-instance edits on a point instancer are array edits, not prim edits.','Modify Point Instances, Reference','def PointInstancer "rocks" {\n    point3f[] positions = [...]\n    int[] protoIndices = [...]\n}'],
+ ['Modify Point Instances','Edit','advanced','Edits individual instances of a PointInstancer: transforms, visibility, or turning them into real prims.','Changes to the instancer arrays','Instancer; Instance selection; Mode','Hide a few rocks in front of camera with invisibleIds.','Republishing the scatter can reorder ids; keep edits few.','Instancer','over "rocks" { int64[] invisibleIds = [12, 44] }'],
+ ['Light','Lights','basic','Creates or edits UsdLux lights: rect, disk, sphere, distant, cylinder, geometry, with spotlight shaping.','A light prim with inputs:* attributes','Action (Create / Edit / Force Edit); Primitive Path; Type; Intensity; Exposure; Color / temperature; Normalize; Shaping; Look At','Use Edit to change lights that came from layout; use the viewport light state to place it.','Create mode with an existing path makes a second definition in your layer; use Edit.','Light Mixer, Light Linker, Dome Light','def RectLight "key" {\n    float inputs:exposure = 5\n    bool inputs:normalize = 1\n}'],
+ ['Dome Light','Lights','basic','An environment light, usually with an HDRI.','DomeLight prim','Texture; Format; Intensity / Exposure; Rotate; Arnold tab (samples, AOV light group)','Rotate the HDRI to place the sun before touching other lights.','HDRI colour space must match your pipeline (ACEScg vs sRGB).','Light','def DomeLight "dome" { asset inputs:texture:file = @sky.exr@ }'],
+ ['Distant Light','Lights','basic','A sun or moon: parallel rays, angle sets softness.','DistantLight prim','Angle; Intensity / Exposure; Rotation','Real sun angle is about 0.53°.','Translating it does nothing; only rotation matters.','Light','def DistantLight "sun" { float inputs:angle = 0.53 }'],
+ ['Geometry Light','Lights','intermediate','(Houdini 21) Turns meshes, points, curves or volumes into UsdLux lights, with ShadowAPI controls and per-renderer settings.','Light schema applied to geometry','Primitives; Light settings; Shadow controls','Neon signs, light strips, glowing props.','Very dense geometry lights cost more samples to clean up.','Light','over "neon_sign" ( prepend apiSchemas = ["MeshLightAPI"] ) {}'],
+ ['Light Mixer','Lights','basic','One panel to balance many lights: intensity, exposure, colour, solo and mute.','Overrides on existing lights','Lights list; Solo / Mute; Exposure; Colour','Balance in stops; solo each light to judge it alone.','Mute writes an override. Unmute before publishing.','Light, Light Linker','over "lights" { over "fill" { float inputs:exposure = 2.5 } }'],
+ ['Light Linker','Lights','intermediate','Rules for which lights illuminate (or shadow) which prims.','collection:lightLink / shadowLink on lights','Rules (light-centric or prim-centric); Includes / Excludes patterns; Collections under /collection','Drag a light to the middle for a light-centric rule.','Shadow linking in this node is currently Karma CPU only.','Light, Collection','over "rim" { rel collection:lightLink:includes = </World/chars/hero> }'],
+ ['Camera','Cameras','basic','Creates or edits a camera: lens, aperture, clipping, depth of field.','Camera prim','Action; Focal Length; Aperture; Clipping Range; F-Stop; Focus Distance','Edit the layout camera for DOF; don\'t create a second one.','F-Stop 0 disables depth of field.','Render Settings','def Camera "cam" { float focalLength = 35 }'],
+ ['Material Library','Materials','basic','A VOP network whose materials become USD Material prims.','Material and Shader prims under /materials','Material Path Prefix; Geometry path per material (auto-assign); Material flag','Build Arnold shaders (Arnold Material Builder) or MaterialX inside.','Materials only appear for VOP nodes with the Material flag set.','Assign Material, Material Linker','def Material "hero_skin" { token outputs:arnold:surface.connect = <...> }'],
+ ['Assign Material','Materials','basic','Binds materials to prims matched by a pattern.','material:binding relationships','Primitives (pattern); Material Path; Binding strength; Purpose; Collection-based binding','Use precise patterns and collections, not /World/**.','A stronger binding on a parent (strongerThanDescendants) can override you.','Material Library, Material Linker','over "car" { rel material:binding = </materials/car_paint> }'],
+ ['Material Linker','Materials','intermediate','A drag-and-drop UI for material assignment rules, like the Light Linker.','material:binding (direct or collection)','Rules; Materials; Prims','Good for reviewing every assignment in a shot at once.','Rules apply in order; later rules win on conflicts.','Assign Material','# one binding per rule'],
+ ['Collection','Edit','intermediate','Creates USD collections from patterns, including (H21) path-expression collections.','CollectionAPI on a prim','Collection name; Includes / Excludes; Expansion rule; Path expression','Name sets once ("chrome_parts") and reuse them in bindings and links.','Collections are for passing groups through the pipeline; use selection rules for local picking.','Assign Material, Light Linker','def Scope "collections" ( prepend apiSchemas = ["CollectionAPI:chrome"] ) {}'],
+ ['Edit Properties','Edit','basic','Sets any attribute or metadata on matched prims, with Set / Add / Multiply / Block operations.','Attribute opinions in the active layer','Primitives; Properties (from a prim or by name); Operation per parm; Initialize from prim','Initialize Parameters, then change only what you need; the rest stays Do Nothing.','Typos in a property name silently create a new custom attribute.','Attribute Wrangle, Configure Primitive','over "key" { float inputs:exposure = 6 }'],
+ ['Edit','Edit','basic','Interactive transform editing in the viewport with handles, physics and placement tools.','xformOp overrides','Primitives; Transform; Use physics','Fine for set dressing tweaks in the shot layer.','Transform edits on instance proxies are not allowed; edit the instance root.','Transform','over "chair_03" { double3 xformOp:translate = (1, 0, 2) }'],
+ ['Transform','Edit','basic','Applies a numeric transform to matched prims.','xformOp overrides','Primitives; Translate / Rotate / Scale; Transform behaviour (append / replace)','Use for precise, repeatable moves.','Replace mode throws away the incoming transform.','Edit','over "set" { double3 xformOp:rotateXYZ = (-90, 0, 0) }'],
+ ['Configure Primitive','Edit','basic','Sets prim-level metadata: kind, purpose, draw mode, instanceable, active, visibility, specifier.','Metadata and visibility opinions','Primitives; Kind; Purpose; Draw Mode; Instanceable; Active; Visibility','Bounds draw mode for distant components keeps the viewport fast.','Draw mode needs a model kind (component / assembly) on the prim.','Prune, Edit Properties','over "building_a" { uniform token model:drawMode = "bounds" }'],
+ ['Prune','Edit','basic','Hides or deactivates matched prims.','visibility = invisible or active = false','Primitives; Method (Deactivate / Make Invisible); Prune unselected','Make Invisible for working; Deactivate when it must truly vanish.','Deactivating many prims forces heavy recomposition.','Configure Primitive','over "scratch_light" ( active = false ) {}'],
+ ['Set Variant','Edit','basic','Chooses a variant on matched prims.','variant selection metadata','Primitives; Variant set; Variant name','Use patterns to switch a whole crowd of assets at once.','A stronger layer\'s selection still wins.','Add Variant','over "car" ( variants = { string paint = "blue" } ) {}'],
+ ['Add Variant','Edit','advanced','Authors new variants from its inputs into a variant set.','variantSets and variant contents','Primitive; Variant set name; Variant names (one per input)','Lighting variants (day / night) in one asset or shot layer.','Edits inside a variant only show while it is selected.','Set Variant','variantSet "lighting" = { "day" {...} "night" {...} }'],
+ ['Attribute Wrangle','Edit','advanced','VEX over prims: read and write any attribute with usd_* functions.','Any attributes or primvars','Primitives; Run over; VEX snippet','Bulk edits ("+1 stop on every practical light") in one line.','Runs per prim; big patterns on big stages are slow.','Edit Properties, Python Script','// VEX\nusd_setattrib(0, @primpath, "inputs:exposure", usd_attrib(0, @primpath, "inputs:exposure") + 1);'],
+ ['Render Geometry Settings','Render','basic','Per-object render settings written as inheritable primvars: motion blur, dicing, visibility, renderer tabs (Arnold, Karma).','primvars:<renderer>:* on matched prims','Primitives; Motion blur samples; Renderer tabs (subdivision, visibility, matte); Operation menus','Author on parents; children inherit.','Applying it to thousands of meshes adds Hydra overhead.','Render Settings','over "hero" { uniform int primvars:arnold:subdiv_iterations = 2 }'],
+ ['Render Settings','Render','basic','Creates the RenderSettings prim: camera, resolution, purposes, and renderer options (Arnold tabs from HtoA).','RenderSettings prim','Camera; Resolution; Pixel aspect; Data window (crop/overscan); Renderer tabs','Make one per pass; choose which one the render node uses.','A render node pointing at a different settings prim ignores your edits.','Render Product, Render Var, USD Render ROP','def RenderSettings "rs" { rel camera = </World/cam> }'],
+ ['Render Product','Render','intermediate','One output file and the AOVs it contains.','RenderProduct prim','Output picture; Product type; Ordered vars','One product per file; deep and beauty are separate products.','Vars not listed in orderedVars are never written.','Render Var','def RenderProduct "beauty" { token productName = "$HIP/render/$F4.exr" }'],
+ ['Render Var','Render','intermediate','One AOV: raw renderer output or a light path expression.','RenderVar prim','Source name; Source type (raw / lpe / primvar); Data type; (H21) rebuild renderer parameters','With Arnold, name the beauty var "color"; use Arnold AOV names for others.','A wrong source name renders black, not an error.','Render Product','def RenderVar "diffuse" { uniform string sourceName = "diffuse" }'],
+ ['USD Render ROP','Render','basic','Exports the stage to a temporary USD and renders it with husk, locally or on the farm.','Rendered images (no USD edits)','Render settings; Renderer; Frame range; Output override; Verbosity','Same render as the farm: catch issues here first.','A slow USD export slows every render.','USD ROP, Render Settings','husk -R HdArnoldRendererPlugin -s /Render/rs shot.usd'],
+ ['USD ROP','Render','intermediate','Writes the stage\'s layers to USD files on disk.','Files on disk','Output file; Save style (flatten / separate layers); Frame range; Error on missing paths','Combine with Configure Layer save paths for clean department layers.','Layers above a Layer Break are not written.','Configure Layer, Layer Break','# writes shot.usd and lighting.usd'],
+ ['Live Render','Render','intermediate','(Houdini 21) Links a render to the Render Gallery so it updates when upstream LOPs change.','Nothing in USD','Render settings; Gallery target','Keep a final-quality frame updating while you work in GL.','Costs a renderer running in the background.','Render Gallery','# no USD output'],
+ ['Layer Break','Layers','basic','Starts a new layer and marks everything before it as already authored, so it is not saved.','Nothing visible; affects saving','None','Put it right after the shot sublayer to save only your lighting.','Anything you need saved must be below the break.','Configure Layer, USD ROP','# lighting.usd contains only edits after the break'],
+ ['Configure Layer','Layers','basic','Edits the active layer\'s metadata, including its save path, so it is written as its own file.','Layer metadata','Save Path; Start new layer; Flatten input; Layer metadata','Give each department layer a save path.','Without a save path, anonymous layers get merged into the next saved file.','Layer Break, USD ROP','#usda 1.0\n( doc = "lighting" )'],
+ ['Configure Stage','Layers','intermediate','Stage-wide load rules: payload loading, population masks, muted layers, asset resolver context.','Stage load settings','Load payloads; Population mask; Mute layers','Unload heavy payloads in the network, not just in the viewport.','Population masks are absolute: prims outside them cannot be seen or edited.','Scene Graph Tree load masks','# controls how the stage is opened'],
+ ['Merge','Layers','basic','Combines the layer stacks of several branches.','Combined layer stack','Merge style (separate layers / flatten); Input order','Later inputs are stronger; order matters.','Merging branches with complex composition can be a big bottleneck.','Switch','# inputs become sublayers in order'],
+ ['Cache','Layers','intermediate','Writes upstream results as time samples so downstream nodes stop re-cooking per frame.','Time samples in a layer','Frame range; Cache in memory / on disk','Put it right after animated or time-dependent nodes.','Remember to re-cache when the upstream changes.','Fetch','float inputs:exposure.timeSamples = { 1001: 0, 1002: 0.2 }'],
+ ['Fetch','Layers','intermediate','Pulls the output of another LOP node, even in another network.','Same as the fetched node','LOP path','Reuse one lighting rig across several shot branches.','Changes in the source affect every fetch.','Merge, Null','# mirrors another node'],
+ ['Switch','Layers','basic','Outputs one of several inputs.','Same as the chosen input','Select input (can be an expression)','Wedge versions or toggle passes quickly.','Only the chosen branch cooks.','Merge, Shot Switch','# outputs input N'],
+ ['Null','Layers','basic','Does nothing. Used as a named output or for organisation.','Nothing','None','Name nulls OUT_lighting so render nodes point at something stable.','—','Fetch','# no change'],
+ ['Python Script','Debug','advanced','Runs Python on the editable stage of its input.','Anything the script writes','Python code','Use Sdf.ChangeBlock and Sdf-level edits for speed.','Usd-level edits on many prims can be slow.','Attribute Wrangle','stage = hou.pwd().editableStage()'],
+ ['Error','Debug','advanced','Raises a warning or error on a condition, to stop bad scenes reaching the farm.','Nothing','Condition; Message; Severity','Fail early if a camera or render settings prim is missing.','—','Python Script','# error if %rendersettings is empty'],
+ ['Shot Load','Shots','advanced','(H21 beta) Loads a shot for the multi-shot Shot Builder workflow.','Shot layers','Shot; Department layers','Light many shots from one workspace.','Beta: nodes and parameters may change.','Shot Layer Edit, Shot Output','# loads shot layers'],
+ ['Shot Layer Edit','Shots','advanced','(H21 beta) Edits a department layer of a loaded shot.','Edits to a shot layer','Layer; Edits','Per-shot tweaks on top of a master lighting setup.','Beta.','Shot Load','# edits sh020 lighting layer'],
+ ['Shot Output','Shots','advanced','(H21 beta) Writes the edited shot layers.','Files on disk','Output paths','Save per-shot lighting overrides.','Beta.','Shot Load','# writes per-shot layers'],
+ ['Shot Split / Shot Switch','Shots','advanced','(H21 beta) Branch a network per shot, and pick a shot.','Branching only','Shot list','One network, many shots.','Beta.','Switch','# per-shot branches'],
+];
+let ndCat='All',ndSel=ND[12][0];
+function nodes(){
+  const cats=['All',...new Set(ND.map(n=>n[1]))];$('ndCats').innerHTML=cats.map(c=>`<button class="chip" data-c="${c}" aria-pressed="${c===ndCat}">${c}</button>`).join('');
+  $('ndCats').querySelectorAll('[data-c]').forEach(b=>b.addEventListener('click',()=>{ndCat=b.dataset.c;nodes()}));
+  const q=$('ndQ').value.toLowerCase().trim();
+  const list=ND.filter(n=>(ndCat==='All'||n[1]===ndCat)&&(!q||n.join(' ').toLowerCase().includes(q)));
+  $('ndList').innerHTML=list.map(n=>`<button class="ndi${n[0]===ndSel?' cur':''}" data-n="${esc(n[0])}"><span class="lvl ${n[2]}">${n[2][0].toUpperCase()}</span><b>${esc(n[0])}</b><span class="small muted">${esc(n[3])}</span></button>`).join('')||'<p class="muted small">No node matches. Try another word.</p>';
+  $('ndList').querySelectorAll('[data-n]').forEach(b=>b.addEventListener('click',()=>{ndSel=b.dataset.n;nodes();if(innerWidth<900)$('ndCard').scrollIntoView({behavior:'smooth'})}));
+  const n=ND.find(x=>x[0]===ndSel)||ND[0];
+  $('ndCard').innerHTML=`<div class="ch-meta"><span class="lvl ${n[2]}">${n[2]}</span><span class="badge">${esc(n[1])}</span></div><h3 class="nd-title">${esc(n[0])}</h3><p>${esc(n[3])}</p>
+   <dl class="kv"><dt>Writes</dt><dd>${esc(n[4])}</dd><dt>Key parameters</dt><dd>${n[5].split(';').map(x=>`<span class="pchip">${esc(x.trim())}</span>`).join('')}</dd></dl>
+   <div class="note good small"><b>Lighter tip:</b> ${esc(n[6])}</div><div class="note warn small"><b>Watch out:</b> ${esc(n[7])}</div>
+   <span class="eyebrow">Example of what it authors</span><pre class="usda">${hl(n[9])}</pre>
+   <div class="small"><span class="muted">Related: </span>${n[8].split(',').map(r=>{const t=r.trim();return ND.some(x=>x[0]===t)?`<button class="chip" data-rel="${esc(t)}">${esc(t)}</button>`:`<span class="badge">${esc(t)}</span>`}).join(' ')}</div>`;
+  $('ndCard').querySelectorAll('[data-rel]').forEach(b=>b.addEventListener('click',()=>{ndSel=b.dataset.rel;ndCat='All';$('ndQ').value='';nodes()}));
+}
+$('ndQ').addEventListener('input',nodes);
+
+/* --- prim pattern tester --- */
+const PT=[
+ ['/World','Xform','assembly'],['/World/cam','Camera'],['/World/chars','Xform','group'],['/World/chars/hero','SkelRoot','component'],['/World/chars/hero/body','Mesh','',{purpose:'render',mat:'/materials/hero_skin'}],['/World/chars/hero/body_proxy','Mesh','',{purpose:'proxy'}],['/World/chars/hero/hair','BasisCurves','',{mat:'/materials/hair'}],
+ ['/World/props','Xform','group'],['/World/props/car','Xform','component',{variant:'blue'}],['/World/props/car/geo_render','Mesh','',{purpose:'render',mat:'/materials/car_paint'}],['/World/props/car/geo_proxy','Mesh','',{purpose:'proxy'}],['/World/props/car/glass','Mesh','',{purpose:'render',mat:'/materials/glass'}],
+ ['/World/set','Xform','assembly'],['/World/set/street','Mesh','',{mat:'/materials/asphalt'}],['/World/set/building_a','Xform','component',{payload:true}],['/World/set/building_b','Xform','component',{payload:true,visible:false}],
+ ['/World/set/lamps','Scope'],['/World/set/lamps/lamp_01','Xform','component'],['/World/set/lamps/lamp_01/bulb','SphereLight'],['/World/set/lamps/lamp_02','Xform','component'],['/World/set/lamps/lamp_02/bulb','SphereLight'],
+ ['/World/scratch_light','SphereLight','',{active:false}],
+ ['/lights','Scope'],['/lights/key','RectLight'],['/lights/rim','RectLight'],['/lights/dome','DomeLight'],
+ ['/materials','Scope'],['/materials/hero_skin','Material'],['/materials/hair','Material'],['/materials/car_paint','Material'],['/materials/glass','Material'],['/materials/asphalt','Material'],
+ ['/Render','Scope'],['/Render/rendersettings','RenderSettings'],['/Render/Products/beauty','RenderProduct'],
+].map(([p,t,k,o])=>({p,t,k:k||'',purpose:'default',visible:true,active:true,...(o||{})}));
+const TYPEFAM={Gprim:['Mesh','BasisCurves'],Boundable:['Mesh','BasisCurves','Xform','SkelRoot','Camera'],Imageable:['Mesh','BasisCurves','Xform','SkelRoot','Scope','Camera','SphereLight','RectLight','DomeLight'],Light:['SphereLight','RectLight','DomeLight'],UsdLuxBoundableLightBase:['SphereLight','RectLight'],Xformable:['Xform','SkelRoot','Mesh','BasisCurves','Camera','SphereLight','RectLight','DomeLight']};
+const PTPRE=[
+ ['All lights','%type:Light','Every UsdLux light, wherever it lives.'],['Lights except the scratch light','%type:Light - /World/scratch_light','Subtraction reads left to right.'],
+ ['Components only','%kind:component','Assets, not their parts: what you usually select in layout.'],['Everything under the hero','/World/chars/hero/**','** matches any depth; it includes the hero\'s children, not the hero itself.'],
+ ['Hero and its children','/World/chars/hero /World/chars/hero/**','A space is a union.'],['Render meshes of the car','/World/props/car/** & %purpose:render','& keeps only prims in both sets.'],
+ ['Proxy geometry anywhere','%purpose:proxy','Find what the viewport draws instead of render meshes.'],['Geometry using car_paint','%geofrommat:/materials/car_paint','Ask which prims a material is bound to.'],
+ ['Hidden or inactive prims','%visible:false %active:false','Useful when debugging "where did it go".'],['Lamps by name','/World/set/lamps/lamp_0[12]/bulb','[..] matches one listed character.'],
+ ['Descendants of components that are meshes','%kind:component >> & %type:Mesh','>> adds descendants, then & filters to meshes.'],['Slow: leading wildcard','**/bulb','A leading ** walks the whole stage. Prefer /World/set/lamps/**/bulb.'],
+ ['Payload assets','%payload','Prims that carry a payload (unloadable).'],['Render settings prims','%rendersettings','Auto collection of RenderSettings prims.'],
+];
+function globToRe(g){return new RegExp('^'+g.replace(/[.+^${}()|\\]/g,'\\$&').replace(/\*\*/g,'\u0000').replace(/\*/g,'[^/]*').replace(/\u0000/g,'.*').replace(/\?/g,'[^/]').replace(/\\\[|\[/g,'[')+'$')}
+function ptTokenize(s){const t=[];let i=0;
+  while(i<s.length){const c=s[i];
+    if(/\s/.test(c)){i++;if(t.length&&t.at(-1)!=='SP')t.push('SP');continue}
+    if('()&+^'.includes(c)){t.push(c);i++;continue}
+    if(c==='-'&&(i===0||/\s/.test(s[i-1]))){t.push('-');i++;continue}
+    if(c==='>'&&s[i+1]==='>'){t.push('>>');i+=2;continue}
+    if(c==='<'&&s.slice(i,i+4)==='<<>>'){t.push('<<>>');i+=4;continue}
+    if(c==='<'&&s[i+1]==='<'){t.push('<<');i+=2;continue}
+    let j=i;if(c==='%'){j++;while(j<s.length&&/[\w]/.test(s[j]))j++;
+      if(s[j]==='('){let d=0;for(;j<s.length;j++){if(s[j]==='(')d++;if(s[j]===')'){d--;if(!d){j++;break}}}}
+      else if(s[j]===':'){j++;while(j<s.length&&!/[\s()&+^]/.test(s[j]))j++}}
+    else{while(j<s.length&&!/[\s()&+^]/.test(s[j]))j++}
+    t.push({atom:s.slice(i,j)});i=j}
+  while(t.at(-1)==='SP')t.pop();return t.filter((x,k)=>!(x==='SP'&&(['&','+','^','-','(',')','>>','<<','<<>>'].includes(t[k-1])||['&','+','^','-',')','>>','<<','<<>>'].includes(t[k+1]))))}
+const ALL=new Set(PT.map(x=>x.p));
+const anc=p=>{const r=[];let q=p.substring(0,p.lastIndexOf('/'));while(q){r.push(q);q=q.substring(0,q.lastIndexOf('/'))}return r};
+function ptAtom(a,info){
+  const P=x=>PT.find(y=>y.p===x);
+  if(a[0]!=='%'){if(a.startsWith('*'))info.full=true;const re=globToRe(a);return new Set(PT.filter(x=>re.test(x.p)).map(x=>x.p))}
+  info.full=true;
+  const m=a.match(/^%(\w+)(?::(.*)|\((.*)\))?$/);if(!m)throw 'Could not read '+a;const fn=m[1],arg=(m[2]??m[3]??'').trim();
+  const S=f=>new Set(PT.filter(f).map(x=>x.p));
+  switch(fn){
+    case 'type':{const ts=arg.split(',').map(x=>x.trim());return S(x=>ts.some(t=>x.t===t||(TYPEFAM[t]||[]).includes(x.t)))}
+    case 'kind':{const ks=arg.split(',').map(x=>x.trim());return S(x=>ks.includes(x.k))}
+    case 'purpose':{const ps=arg.split(',').map(x=>x.trim());return S(x=>ps.includes(x.purpose))}
+    case 'visible':return S(x=>String(x.visible)===arg);
+    case 'active':return S(x=>String(x.active)===arg);
+    case 'payload':return S(x=>x.payload);
+    case 'rendersettings':return S(x=>x.t==='RenderSettings');
+    case 'geofrommat':return S(x=>x.mat===arg);
+    case 'matfromgeo':{const g=P(arg);return new Set(g&&g.mat?[g.mat]:[])}
+    case 'variant':{const v=arg.split('=').pop();return S(x=>x.variant===v)}
+    case 'children':{const p=arg.replace(/,.*/,'');return S(x=>x.p.substring(0,x.p.lastIndexOf('/'))===p)}
+    case 'descendants':{const inner=ptEval(arg,info);return S(x=>anc(x.p).some(a=>inner.has(a)))}
+    case 'ancestors':{const inner=ptEval(arg,info);const r=new Set();inner.forEach(p=>anc(p).forEach(a=>ALL.has(a)&&r.add(a)));return r}
+    case 'rule':throw 'Selection rules come from your Scene Graph Tree; there are none saved in this demo.';
+    default:throw `%${fn} is a real auto collection but isn't simulated here. Try %type, %kind, %purpose, %visible, %active, %payload, %geofrommat, %children, %descendants, %ancestors.`;
+  }
+}
+function ptEval(src,info){
+  const toks=ptTokenize(src);let i=0;
+  const term=()=>{const t=toks[i];if(t==='('){i++;const r=expr();if(toks[i]!==')')throw 'Missing ")"';i++;return post(r)}if(t&&t.atom){i++;return post(ptAtom(t.atom,info))}throw 'Expected a path or %collection'};
+  const post=r=>{while(['>>','<<','<<>>'].includes(toks[i])){const op=toks[i++];const out=new Set(r);
+    if(op!=='<<')PT.forEach(x=>{if(anc(x.p).some(a=>r.has(a)))out.add(x.p)});if(op!=='>>')r.forEach(p=>anc(p).forEach(a=>ALL.has(a)&&out.add(a)));r=out}return r};
+  const expr=()=>{let r=term();while(i<toks.length&&toks[i]!==')'){let op=toks[i];if(op==='SP'||op==='+'){i++;const b=term();r=new Set([...r,...b])}
+    else if(op==='&'){i++;const b=term();r=new Set([...r].filter(x=>b.has(x)))}else if(op==='-'||op==='^'){i++;const b=term();r=new Set([...r].filter(x=>!b.has(x)))}else if(op&&op.atom){const b=term();r=new Set([...r,...b])}else throw 'Unexpected '+op}return r};
+  const r=expr();if(i<toks.length)throw 'Unexpected ")"';return r}
+function patterns(){
+  const src=$('ptIn').value.trim();let res=new Set(),err='',info={full:false};
+  if(src){try{res=ptEval(src,info)}catch(e){err=String(e)}}
+  const pre=PTPRE.find(p=>p[1]===src);
+  $('ptNote').textContent=err||(pre?pre[2]:src?'Custom pattern.':'Type a pattern or pick a preset.');$('ptNote').className='note small'+(err?' warn':'');
+  $('ptN').textContent=err?'—':res.size;$('ptCost').textContent=!src||err?'—':info.full?'whole stage':'from a path';$('ptCost').style.color=`var(${info.full?'--warn':'--good'})`;
+  $('ptTree').innerHTML=PT.map(x=>{const d=x.p.split('/').length-2;const on=res.has(x.p);return `<div class="ptrow${on?' on':''}" style="padding-left:${6+d*13}px">${esc(x.p.split('/').pop())} <span class="ty">${x.t}${x.k?' · '+x.k:''}${x.purpose!=='default'?' · '+x.purpose:''}${x.visible?'':' · invisible'}${x.active?'':' · inactive'}${x.payload?' · payload':''}</span></div>`}).join('');
+  [...$('ptPresets').children].forEach(b=>b.setAttribute('aria-pressed',PTPRE[+b.dataset.p][1]===src));
+}
+$('ptPresets').innerHTML=PTPRE.map((p,i)=>`<button class="chip" data-p="${i}">${esc(p[0])}</button>`).join('');
+$('ptPresets').querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{$('ptIn').value=PTPRE[+b.dataset.p][1];patterns()}));
+$('ptIn').addEventListener('input',patterns);$('ptIn').value=PTPRE[0][1];
+$('ptRef').innerHTML=[['*','Any characters within one name','/World/set/*'],['**','Any depth of hierarchy','/World/**/bulb'],['?  [..]','One character / one of a set','/lamps/lamp_0[12]'],['space or +','Union','/lights/key /lights/rim'],['&','Intersection','/World/** & %type:Mesh'],['- or ^','Subtract','%type:Light - /World/scratch_light'],['( )','Group','/* - (/a /b)'],['~','Prune: don\'t traverse below matches','%type:Xform ~ %kind:component'],['>>  <<  <<>>','Add descendants / ancestors / both','%kind:component >>'],
+ ['%type: %kind: %purpose:','Schema type (incl. derived), model kind, purpose','%type:UsdGeomBoundable'],['%visible: %active: %payload','State auto collections','%visible:false'],['%geofrommat: %matfromgeo:','Material ↔ geometry','%geofrommat:/materials/glass'],['%children() %descendants() %ancestors()','Hierarchy','%descendants(%type:Material)'],
+ ['%bound %closerthan %size','Spatial (camera frustum, distance, screen size)','%bound(/World/cam)'],['%keep %keeprandom','Pick by index or at random','%keeprandom(%kind:component, fraction=0.25)'],['%rule:name','A saved selection rule','%rule:hero_parts'],['%pathexpr(..)','(H21) USD path expression','%pathexpr(//apple)'],['{ vex }','VEX test per prim (slow, intersect first)','/World/** & { usd_iskind(0, @primpath, "component") }']]
+ .map(r=>`<tr><td><code>${esc(r[0])}</code></td><td>${esc(r[1])}</td><td><code>${esc(r[2])}</code></td></tr>`).join('');
+
+/* --- Scene Graph Details spreadsheet --- */
+const SGP={
+ '/lights/key':{t:'RectLight',a:[['inputs:exposure','float','5.5','set',{ed:['light_key','lightmixer1'],ls:[['lighting (anon)','5.5'],['layout.usd','4']]}],['inputs:intensity','float','1','fallback'],['inputs:color','color3f','(1, 0.92, 0.82)','set'],['inputs:normalize','bool','1','set'],['inputs:width','float','2','set'],['inputs:height','float','1','set'],['inputs:shaping:cone:angle','float','90','fallback'],['xformOp:transform','matrix4d','( (0.7,0,-0.7,0) … (−3.1, 4.2, 2.6, 1) )','set'],['collection:lightLink:includes','rel','—','rel']]},
+ '/lights/rim':{t:'RectLight',a:[['inputs:exposure','float','6','set',{ed:['light_rim'],ls:[['lighting (anon)','6']]}],['inputs:intensity','float','1','fallback'],['inputs:color','color3f','(0.8, 0.9, 1)','set'],['inputs:normalize','bool','1','set'],['xformOp:transform','matrix4d','( … (2.4, 3.1, −4.0, 1) )','set'],['collection:lightLink:includes','rel','</World/chars/hero>','rel']]},
+ '/lights/dome':{t:'DomeLight',a:[['inputs:exposure','float','0','fallback'],['inputs:intensity','float','1','fallback'],['inputs:texture:file','asset','@hdri/overcast_4k.exr@','set'],['inputs:texture:format','token','latlong','set']]},
+ '/World/set/lamps/lamp_01/bulb':{t:'SphereLight',a:[['inputs:exposure','float','2','set'],['inputs:radius','float','0.05','set'],['inputs:intensity','float','1','fallback']]},
+ '/World/set/lamps/lamp_02/bulb':{t:'SphereLight',a:[['inputs:exposure','float','−2','set',{ed:['editproperties3'],ls:[['lighting (anon)','−2'],['layout.usd','2']]}],['inputs:radius','float','0.05','set'],['inputs:intensity','float','1','fallback']]},
+ '/World/chars/hero':{t:'SkelRoot',a:[['xformOp:transform','matrix4d','( … (1.2, 0, 3.4, 1) ) @1012','timesampled',{ts:true}],['primvars:arnold:subdiv_iterations','int','2','set'],['visibility','token','inherited','fallback'],['kind (metadata)','token','component','set']]},
+ '/World/props/car':{t:'Xform',a:[['xformOp:transform','matrix4d','( … (4.1, 0, 1.0, 1) )','set'],['material:binding','rel','</materials/car_paint>','rel'],['primvars:displayColor','color3f[]','[(0.7, 0.1, 0.1)]','set'],['extent','float3[]','[(−2,0,−1),(2,1.4,1)]','computed']]},
+ '/World/set/street':{t:'Mesh',a:[['points','point3f[]','[ 4,096 points ]','clip'],['faceVertexCounts','int[]','[ 4,032 ]','clip'],['material:binding','rel','</materials/asphalt>','rel'],['subdivisionScheme','token','catmullClark','fallback']]},
+};
+const SGSTATE={notset:['not set','--muted'],fallback:['fallback','--o7'],set:['set','--ink'],timesampled:['time sampled','--g4'],clip:['value clip','--g2'],computed:['computed','--g5'],rel:['relationship','--g3']};
+const SG={sel:['/lights/key'],attr:'inputs:exposure',tab:'Editor Nodes',list:false,dec:false,done:{ed:false,cmp:false,ts:false}};
+function sgTF(v){const m=v.match(/\(([-−\d.]+), ([-−\d.]+), ([-−\d.]+), 1\)/);return m?[`(${m[1]}, ${m[2]}, ${m[3]})`,'(0, −45, 0)','(1, 1, 1)']:['—','—','—']}
+function sheet(){
+  const prims=Object.keys(SGP);
+  $('sgPrims').innerHTML=prims.map(p=>`<button data-p="${p}" aria-current="${SG.sel.includes(p)}" style="padding-left:${6+(p.split('/').length-2)*8}px">${esc(p.endsWith('/bulb')?p.split('/').slice(-2).join('/'):p.split('/').pop())} <span class="ty">${SGP[p].t}</span></button>`).join('')+'<p class="small muted" style="margin:6px">Ctrl/⌘-click to select several (List View compares them).</p>';
+  $('sgPrims').querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',e=>{const p=b.dataset.p;if(e.ctrlKey||e.metaKey){SG.sel=SG.sel.includes(p)?SG.sel.filter(x=>x!==p):[...SG.sel,p];if(!SG.sel.length)SG.sel=[p]}else SG.sel=[p];sheet()}));
+  $('sgTree').setAttribute('aria-pressed',!SG.list);$('sgListV').setAttribute('aria-pressed',SG.list);$('sgDec').setAttribute('aria-pressed',SG.dec);
+  const f=$('sgFilter').value.toLowerCase();
+  const dot=s=>`<span class="sgdot" style="background:var(${SGSTATE[s][1]})" title="${SGSTATE[s][0]}"></span>`;
+  let h='';
+  if(SG.list&&SG.sel.length>1){const attrs=[...new Set(SG.sel.flatMap(p=>SGP[p].a.map(a=>a[0])))].filter(a=>(!f||a.toLowerCase().includes(f))&&!a.startsWith('xformOp'));
+    h=`<thead><tr><th>Prim</th>${attrs.map(a=>`<th>${esc(a)}</th>`).join('')}</tr></thead><tbody>${SG.sel.map(p=>`<tr><td class="mono">${esc(p.split('/').pop())}</td>${attrs.map(a=>{const r=SGP[p].a.find(x=>x[0]===a);return `<td class="mono">${r?dot(r[3])+esc(r[2]):dot('notset')+'—'}</td>`}).join('')}</tr>`).join('')}</tbody>`;
+    if(SG.sel.filter(p=>SGP[p].t.endsWith('Light')).length>=3&&attrs.includes('inputs:exposure'))SG.done.cmp=true}
+  else{const p=SG.sel[0];const rows=SGP[p].a.filter(a=>!f||a[0].toLowerCase().includes(f));
+    h=`<thead><tr><th>Attribute</th><th>Value</th><th>Type</th></tr></thead><tbody>`+rows.flatMap(a=>{if(SG.dec&&a[1]==='matrix4d'){const [t,r,s]=sgTF(a[2]);return[['xformOp:translate (decomposed)','double3',t,a[3]],['xformOp:rotate (decomposed)','double3',r,a[3]],['xformOp:scale (decomposed)','double3',s,a[3]]].map(x=>`<tr class="sgr${SG.attr===a[0]?' cur':''}" data-a="${esc(a[0])}"><td>${dot(x[3])}<code>${esc(x[0])}</code></td><td class="mono">${esc(x[2])}</td><td class="mono small">${x[1]}</td></tr>`)}
+      return[`<tr class="sgr${SG.attr===a[0]?' cur':''}" data-a="${esc(a[0])}"><td>${dot(a[3])}<code>${esc(a[0])}</code></td><td class="mono">${esc(a[2])}</td><td class="mono small">${a[1]}</td></tr>`]}).join('')+'</tbody>'}
+  $('sgTable').innerHTML=h;
+  $('sgTable').querySelectorAll('[data-a]').forEach(r=>r.addEventListener('click',()=>{SG.attr=r.dataset.a;sheet()}));
+  const TABS=['Value','Time Samples','Metadata','Editor Nodes','Layer Stack','Composition'];
+  $('sgTabs').innerHTML=TABS.map(t=>`<button class="tab" role="tab" aria-selected="${t===SG.tab}" data-t="${t}">${t}</button>`).join('');
+  $('sgTabs').querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{SG.tab=b.dataset.t;sheet()}));
+  const p=SG.sel[0],A=SGP[p].a.find(x=>x[0]===SG.attr)||SGP[p].a[0],X=A[4]||{};let d='';
+  if(SG.tab==='Value')d=`<pre class="usda">${hl(`${A[1]} ${A[0]} = ${A[2]}`)}</pre>`;
+  else if(SG.tab==='Time Samples'){if(X.ts){SG.done.ts=true;d=`<div class="tbl"><table><thead><tr><th>Frame</th><th>translate</th></tr></thead><tbody>${[1001,1006,1012,1018,1024].map((f,i)=>`<tr><td class="mono">${f}</td><td class="mono">(${(i*0.6).toFixed(1)}, 0, ${(2+i*0.35).toFixed(2)})</td></tr>`).join('')}</tbody></table></div><button class="btn" id="sgCsv">Copy CSV</button>`}else d='<p class="small muted">Not time sampled: one value for every frame.</p>'}
+  else if(SG.tab==='Metadata')d=`<dl class="kv"><dt>typeName</dt><dd>${A[1]}</dd><dt>variability</dt><dd>${A[0].startsWith('inputs')?'varying':'uniform or varying'}</dd><dt>custom</dt><dd>${A[0].includes('arnold')?'true':'false'}</dd>${A[3]==='clip'?'<dt>clips</dt><dd>street_clip.$F4.usd</dd>':''}</dl>`;
+  else if(SG.tab==='Editor Nodes'){if(X.ed){if(p==='/World/set/lamps/lamp_02/bulb')SG.done.ed=true;d=`<p class="small">LOP nodes that modified this property:</p>`+X.ed.map(n=>`<div class="fileline"><span class="badge">LOP</span>/stage/${esc(n)}</div>`).join('')}else d='<p class="small muted">No LOP in this network changed it; the value comes from a loaded file or the schema fallback.</p>'}
+  else if(SG.tab==='Layer Stack')d=(X.ls||[[A[3]==='fallback'?'(schema fallback)':'shot.usd',A[2]]]).map((l,i)=>`<div class="fileline"><span class="badge">${i?'weaker':'wins'}</span>${esc(l[0])} <span class="mono">${esc(l[1])}</span></div>`).join('');
+  else d=`<p class="small">Composition for <code>${esc(p)}</code>: root layer → sublayer shot.usd → ${p.startsWith('/World/props/car')?'payload @assets/car/car.usd@ → variant paint=blue':p.startsWith('/World/set')?'reference @env/street_set.usd@':'local opinions only'}.</p>`;
+  $('sgDetail').innerHTML=d;const csv=$('sgCsv');if(csv)csv.addEventListener('click',()=>{const t='frame,translate\n1001,(0,0,2)\n1006,(0.6,0,2.35)';if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>csv.textContent='Copied',()=>csv.textContent='Copy failed')});
+  $('sgLegend').innerHTML=Object.values(SGSTATE).map(([l,c])=>`<span><span class="sgdot" style="background:var(${c})"></span>${l}</span>`).join('');
+  const G=[['ed','Find which node made lamp_02 so dark (lamp_02/bulb → exposure → Editor Nodes)'],['cmp','Compare exposure on three or more lights at once (Ctrl-click them, List View)'],['ts','Find a time-sampled attribute and open its Time Samples tab']];
+  $('sgGoals').innerHTML=G.map(([k,t])=>`<div class="goal${SG.done[k]?' ok':''}"><span>${SG.done[k]?'✓':'○'}</span>${esc(t)}</div>`).join('');
+}
+$('sgTree').addEventListener('click',()=>{SG.list=false;sheet()});$('sgListV').addEventListener('click',()=>{SG.list=true;sheet()});$('sgDec').addEventListener('click',()=>{SG.dec=!SG.dec;sheet()});$('sgFilter').addEventListener('input',sheet);
+
+/* =====================================================================
+   VIEWPORT ADDITIONS
+   ===================================================================== */
+const DO=[
+ ['Render','Solaris only. Crop Render to Camera Aspect, Image Resolution, and the render delegate\'s own options.','Lower Image Resolution for faster Arnold IPR while you work; crop to camera aspect so the frame matches the shot.'],
+ ['Guides','Gnomons, field guides, camera view mask, selection, guide sizes. Additional information: Draw Time, Render Time, Render Stats, Geometry information.','Turn on Render Time and Render Stats to see what the delegate is doing; the camera view mask darkens outside the frame.'],
+ ['Lights','Lighting modes: No Lighting, Work Lights, Scene Lights. Headlight options: Headlight, Dome Light, Physical Sky, Three Point Lighting. Shadows: Ambient Occlusion, Shadows, Shadow Quality, Light Map Size, Shadowmap Memory/Time. Reflections.','Scene Lights with shadows for blocking in GL; Work Lights to inspect models without your rig.'],
+ ['Optimize','Culling: Visible Objects, Remove Backfaces, Distance-based Packed Geometry Culling, Scene Polygon Limit, Bounding Boxes display, Optimize Packed Geometry, GSplats Alpha Culling. Crowd agent LOD settings.','Set Scene Polygon Limit to what your GPU handles; far geometry then draws as boxes.'],
+ ['Texture','Display / Mipmap textures, Anisotropic Filtering, Texture Cache Size, Single Texture Limit, Dynamically reduce texture scale, 2D and 3D resolution limits, HDR textures.','Limit texture resolution on big sets; the GL viewport doesn\'t need 8K maps.'],
+ ['Material','Use Materials, Transparency, Displacement, Default Material, Material Assignment.','Turn materials off to judge pure lighting on grey; turn displacement off for speed.'],
+ ['Geometry','Tessellation (level of detail, subdivision polygon limit), volumes, wireframe, particles, instancing, normals.','Lower subdivision limits keep heavy assets responsive.'],
+ ['Scene','Antialiasing samples, X-Ray, information toggles (name, camera name, state status, badges), onion skinning, colour correction, viewport split.','Colour correction should match your OCIO view so GL and renders read the same.'],
+ ['Camera','Field of view, aspect, crop, view mask opacity, clipping, depth of field, foreground image.','View mask opacity makes the area outside the frame dark: no lighting what\'s off screen.'],
+ ['Background','Colour scheme, background image or video.','Load a plate to light against the photography.'],
+ ['Fog','Uniform and volumetric fog, bloom.','Quick atmosphere previews in GL; the real look comes from the renderer.'],
+ ['Markers / Grid / Visualize','Point and primitive markers, grids, visualizers.','Rarely needed for lighting; turn markers off to keep the view clean.'],
+];
+let doI=3;
+function display(){$('doTabs').innerHTML=DO.map((d,i)=>`<button class="tab" aria-selected="${i===doI}" data-i="${i}">${d[0]}</button>`).join('');
+  $('doTabs').querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{doI=+b.dataset.i;display()}));
+  const d=DO[doI];$('doCard').innerHTML=`<span class="eyebrow">Display Options › ${esc(d[0])}</span><h3>${esc(d[0])}</h3><p>${esc(d[1])}</p><div class="note good small"><b>For lighters:</b> ${esc(d[2])}</div>`}
+const SGT=[[P.bA,'building_a','geo',true],[P.bB,'building_b','geo',true],[P.car,'car','geo'],[P.hero,'hero','geo'],[P.b1,'lamp_01/bulb','light'],[P.b2,'lamp_02/bulb','light'],[P.scratch,'scratch_light','light'],[P.key,'key','light'],[P.rim,'rim','light'],[P.dome,'dome','light']];
+let sgtS={},sgtMode='ipr';
+function sgtReset(){sgtS={};SGT.forEach(r=>sgtS[r[0]]={L:true,A:r[0]!==P.scratch,V:true,S:false,Sel:true})}
+function sgtView(){
+  const cols=[['L','L','Loaded (payload)'],['A','Active','Active'],['V','Visible','Visible'],['S','Solo','Solo'],['Sel','Sel.','Selectable']];
+  $('sgtTbl').innerHTML=`<thead><tr><th>Prim</th>${cols.map(c=>`<th title="${c[2]}">${c[1]}</th>`).join('')}</tr></thead><tbody>${SGT.map(([p,n,k,pl])=>`<tr><td><code>${n}</code> <span class="ty small muted">${k}</span></td>${cols.map(c=>c[0]==='L'&&!pl?'<td class="muted">—</td>':`<td><input type="checkbox" data-p="${p}" data-c="${c[0]}" ${sgtS[p][c[0]]?'checked':''} aria-label="${c[2]} ${n}"></td>`).join('')}</tr>`).join('')}</tbody>`;
+  $('sgtTbl').querySelectorAll('input').forEach(c=>c.addEventListener('change',()=>{sgtS[c.dataset.p][c.dataset.c]=c.checked;sgtView()}));
+  const soloL=SGT.filter(r=>r[2]==='light'&&sgtS[r[0]].S).map(r=>r[0]),soloG=SGT.filter(r=>r[2]==='geo'&&sgtS[r[0]].S).map(r=>r[0]);
+  const net=full();net.splice(net.findIndex(n=>n.t==='rop'),1);
+  SGT.forEach(([p,n,k,pl])=>{const s=sgtS[p];let active=s.A,vis=s.V;if(k==='light'&&soloL.length)active=soloL.includes(p);if(k==='geo'&&soloG.length)vis=soloG.includes(p)||vis&&false;if(k==='geo'&&soloG.length)vis=soloG.includes(p);
+    if(pl&&!s.L)vis=false;if(!active)net.push(mk('prune',{target:p,method:'deactivate'}));else if(!vis)net.push(mk('configprim',{target:p,visibility:'invisible'}));
+    if(p===P.scratch&&active)net.push(mk('configprim',{target:p,visibility:vis?'inherited':'invisible'}))});
+  // scratch needs special case: base full() hides it; showing requires removing that prune
+  if(sgtS[P.scratch].A&&(!soloL.length||soloL.includes(P.scratch))){const i=net.findIndex(n=>n.t==='prune'&&n.p.target===P.scratch&&n.p.method==='make invisible');if(i>=0)net.splice(i,1)}
+  const ev=evaluate(net,false);
+  if(SGT.some(r=>r[3]&&!sgtS[r[0]].L))ev.payloads=true;
+  drawShot($('sgtCv'),ev,sgtMode,true);
+  [...$('sgtModes').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===sgtMode));
+  const notes=[];if(soloL.length)notes.push(`Solo lights: only ${soloL.map(p=>p.split('/').pop()).join(', ')} active.`);if(soloG.length)notes.push(`Solo geometry: only ${soloG.map(p=>p.split('/').pop()).join(', ')} visible.`);
+  if(SGT.some(r=>r[3]&&!sgtS[r[0]].L))notes.push('Unloaded payloads are not composed at all: fastest, but nothing to render.');
+  if(SGT.some(r=>!sgtS[r[0]].Sel))notes.push('Unselectable prims can\'t be picked in the viewport; handy to stop grabbing the set by accident.');
+  $('sgtNote').textContent=(notes.join(' ')||'Toggle columns to change what the viewport shows.')+' These are viewport overrides only; the USD your network writes is unchanged.';
+}
+$('sgtReset').addEventListener('click',()=>{sgtReset();sgtView()});
+$('sgtModes').querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{sgtMode=b.dataset.m;sgtView()}));
+
+nodes();patterns();sheet();display();sgtReset();sgtView();
+
 /* ===== PAGES, MODE, PROGRESS ===== */
 const SECS=[...document.querySelectorAll('section.ch[data-level]')];
 const LVL={basic:['Basic','Light a shot with Arnold','--g1'],intermediate:['Intermediate','Compose, render, override','--g2'],advanced:['Advanced','Scale, speed, debug, pipeline','--g3']};
@@ -2791,7 +3170,7 @@ SECS.forEach((sec,i)=>{const nn=String(i+1).padStart(2,'0');const eb=sec.querySe
   meta.innerHTML=`<span class="lvl ${sec.dataset.level}">${LVL[sec.dataset.level][0]}</span><button class="donebtn" data-done="${sec.id}"></button>`;txt.insertBefore(meta,txt.firstChild);
   if(ANALOGY[sec.id]){const a=document.createElement('div');a.className='simple-only analogy';a.innerHTML='<b>In plain words:</b> '+esc(ANALOGY[sec.id]);meta.after(a)}
   $('v-'+sec.dataset.level).appendChild(sec)});
-const VIEWS=[['home','Home'],['practice','Practice'],['basic','Basic'],['intermediate','Intermediate'],['advanced','Advanced'],['arnold','Arnold'],['viewport','Viewport'],['cheatsheet','Cheat sheet']];
+const VIEWS=[['home','Home'],['practice','Practice'],['basic','Basic'],['intermediate','Intermediate'],['advanced','Advanced'],['arnold','Arnold'],['viewport','Viewport'],['nodes','Nodes'],['cheatsheet','Cheat sheet']];
 let mode='simple';try{mode=localStorage.getItem('usdlab-mode')||'simple'}catch(e){}
 document.body.dataset.mode=mode;
 function topbar(){
